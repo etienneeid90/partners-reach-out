@@ -1,5 +1,5 @@
 const express = require('express');
-const addRequestId = require('./public/middlewares/middleware')
+const addRequestId = require('./public/middlewares/addRequestId')
 
 const app = express();
 
