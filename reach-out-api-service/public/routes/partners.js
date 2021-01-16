@@ -22,6 +22,17 @@ partnersRouter.post('/in-range', (req, res) => {
 		// The Client's list of partners
 		const partners = req.body.partners || require('../constants/partners.json');
 
+		logger.info(`${logPrefix} - Converting the offices coordinates to arrays`);
+		for(p of partners){
+			if(p.hasOwnProperty('offices') && p.offices.length){
+				for(o of p.offices){
+					if(o.hasOwnProperty('coordinates') && typeof o.coordinates == 'string'){
+						o.coordinates = (o.coordinates.split(',')).map((c) => Number(c));
+					}
+				}
+			}
+		}
+
 		logger.info(`${logPrefix} - The provided range is: ${req.body.range} Km`);
 		// the given range in kilometers
 		const range = req.body.range;
@@ -29,6 +40,21 @@ partnersRouter.post('/in-range', (req, res) => {
 		logger.info(`${logPrefix} - ${req.body.hasOwnProperty('rendezvousCoordinates') ? 'RendezVous coordinates have been provided' : 'No rendezvous coordinates have been provided'}`);
 		// the rendezvous coordinates by default Starbucks Cafe Central London 
 		const rendezvousCoordinates = req.body.rendezvousCoordinates || [51.5144636,-0.142571];
+
+		logger.info(`${logPrefix} - Validating the provided inputs`);
+		const validationRes = validateInputs(logPrefix, req.body);
+		if(validationRes.status != 'success'){
+			logger.error(`${logPrefix} - Returning Validation Error "${validationRes.data.message}"`);
+
+			// returning the result to the client
+			return res.status(400).send({
+				status: 'error',
+				data:{
+					errorType: 'Validation Error',
+					error: validationRes.data.message
+				}
+			});
+		}
 
 		logger.info(`${logPrefix} - The rendezvous coordinates are: ${rendezvousCoordinates}`);
 		logger.info(`${logPrefix} - - - - - - - - - - - - - - - - - - - - -`);
@@ -40,7 +66,7 @@ partnersRouter.post('/in-range', (req, res) => {
 			// loop over the partner's offices calculate the distance from their location to starbucks london
 			for(office of partner.offices){
 				logger.info(`${logPrefix} - Calculating distance to: ${office.location}`);
-				const distance = gcdCalculator.distance(rendezvousCoordinates, office.coordinates.split(','));
+				const distance = gcdCalculator.distance(rendezvousCoordinates, office.coordinates);
 				logger.info(`${logPrefix} - The calculated distance is: ${distance} Km`);
 				logger.info(`${logPrefix} - - - - - - - - - - - - - - - - - - - - -`);
 				if(distance <= range){
@@ -55,7 +81,7 @@ partnersRouter.post('/in-range', (req, res) => {
 		logger.info(`${logPrefix} - Returning ${partnersToInvite.length} office locations`);
 
 		// returning the result to the client
-		res.status(200).send({
+		return res.status(200).send({
 			status: 'success',
 			data:{
 				partnersToInvite,
@@ -63,18 +89,143 @@ partnersRouter.post('/in-range', (req, res) => {
 			}
 		});
     } catch(error){
-		logger.error(`${logPrefix} - Returning Unhandled Error ${JSON.stringify(error)}`);
+		logger.error(`${logPrefix} - Returning Unhandled Error ${error.message}`);
 		
 		// returning an error to the client
-		res.status(500).send({
+		return res.status(500).send({
 			status: 'error',
 			data: {
 				errorType: 'Unhandled Error',
-				error
+				error: error.message
 			}
 		});
     }
     
 });
+
+function validateInputs (logPrefix, inputs) {
+	const res = {
+		status: 'error',
+		data: {
+			errorType: 'Validation Error',
+			message: ''
+		}
+	};
+
+	logger.info(`${logPrefix} - check if a range has been provided`);
+	if(!inputs.hasOwnProperty('range')){
+		res.data.message = 'range is required';
+		return res;
+	}
+	
+	logger.info(`${logPrefix} - check if the provided range is a positive number`);
+	if(typeof inputs.range != 'number' || inputs.range < 0){
+		res.data.message = 'range must be a positive number';
+		return res;
+	}
+
+	logger.info(`${logPrefix} - check if the provided rendezvousCoordinates is an array of 2 elements`);
+	if((inputs.hasOwnProperty('rendezvousCoordinates') && !Array.isArray(inputs.rendezvousCoordinates)) || inputs.rendezvousCoordinates.length != 2){
+		res.data.message = 'rendezvousCoordinates must be an array of a latitude and a longitude';
+		return res;
+	}
+
+	logger.info(`${logPrefix} - check if the provided latitude and longitude are numbers`);
+	for(l of inputs.rendezvousCoordinates){
+		if(isNaN(l)){
+			res.data.message = 'latitude and longitude must be numbers';
+			return res;
+		}
+	}
+
+	if(inputs.hasOwnProperty('partners')){
+		// check if the provided partners is of type array
+		if(!Array.isArray(inputs.partners)){
+			res.data.message = 'partners must be an array';
+			return res;
+		}
+
+		const Validator = require('jsonschema').Validator;
+		const jsonValidator = new Validator();
+		const jsonSchema = {
+			"type": "object",
+			"properties": {
+			"id": {
+				"type": "integer"
+			},
+			"urlName": {
+				"type": "string"
+			},
+			"organization": {
+				"type": "string"
+			},
+			"customerLocations": {
+				"type": "string"
+			},
+			"willWorkRemotely": {
+				"type": "boolean"
+			},
+			"website": {
+				"type": "string"
+			},
+			"services": {
+				"type": "string"
+			},
+			"offices": {
+				"type": "array",
+				"minItems": 1,
+				"items": [
+				{
+					"type": "object",
+					"properties": {
+					"location": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"coordinates": {
+						"type": "array",
+						"minItems": 2,
+						"maxItems": 2,
+						"items": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "number"
+						}
+						]
+					}
+					},
+					"required": [
+					"location",
+					"coordinates"
+					]
+				}
+				]
+			}
+			},
+			"required": [
+			"id",
+			"urlName",
+			"organization",
+			"offices"
+			]
+		};
+		for(p of inputs.partners){
+			if(!jsonValidator.validate(p, jsonSchema).valid){
+				res.data.message = 'invalid partner format';
+				return res;
+			}
+		}
+	}
+
+	// if all is valid
+	res.status = 'success';
+	res.data = {};
+	return res;
+
+}
 
 module.exports = partnersRouter;
