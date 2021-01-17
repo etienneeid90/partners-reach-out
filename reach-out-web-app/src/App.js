@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+/* Components */
 import InputsPreview from './components/InputsPreview';
 import ReachOutForm from './components/ReachOutForm';
 
@@ -26,26 +27,49 @@ class App extends Component {
         this.parsePartners = this.parsePartners.bind(this);
 	}
 
+    /**
+     * called on range edit
+     * updates the range value in this component and calls editJsonParams
+     * @param {string} r the new range value
+    */ 
 	editRange(r) {
         this.range= r || null;
         this.editJsonParams();
     }
 
+    /**
+     * called on latitude edit
+     * updates the latitude value in this component and calls editJsonParams
+     * @param {string} l the new latitude value
+    */ 
     editLatitude(l) {
         this.latitude= l || null;
         this.editJsonParams();
     }
 
+    /**
+     * called on longitude edit
+     * updates the longitude value in this component and calls editJsonParams
+     * @param {string} l the new longitude value
+    */ 
     editLongitude(l) {
         this.longitude= l || null;
         this.editJsonParams();
     }
 
+    /**
+     * called on partners edit
+     * updates the partners value in this component and calls editJsonParams.
+     * @param {string} p the new partners value
+    */ 
     editPartners(p) {
         this.partners= p || [];
         this.editJsonParams();
     }
-
+    
+    /**
+     * Prepares the parameters to send to the api
+    */ 
 	editJsonParams() {
 
         // if range has been provided then fill it in 'allParams' else remove it from this last
@@ -81,12 +105,14 @@ class App extends Component {
             delete this.allParams.partners
         }
 
-        console.log(this.allParams);
-        console.log(JSON.stringify(this.allParams, null, 4));
-
 		this.setState({ jsonParams: JSON.stringify(this.allParams, null, 4) });
     }
     
+
+    /**
+     * Parses the partners list filled by the client if parse-able if not it returns an empty array
+     * @param {string} partners the client's list of partners
+     */
     parsePartners(partners){
         try {
             return JSON.parse(partners);

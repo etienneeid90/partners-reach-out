@@ -8,8 +8,7 @@ class ReachOutForm extends Component {
             range: undefined,
             latitude: undefined,
 			longitude: undefined,
-			partners: undefined,
-			showPartnerField: false
+			partners: undefined
 		};
 	}
 
