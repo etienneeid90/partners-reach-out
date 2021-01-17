@@ -125,16 +125,18 @@ function validateInputs (logPrefix, inputs) {
 	}
 
 	logger.info(`${logPrefix} - check if the provided rendezvousCoordinates is an array of 2 elements`);
-	if((inputs.hasOwnProperty('rendezvousCoordinates') && !Array.isArray(inputs.rendezvousCoordinates)) || inputs.rendezvousCoordinates.length != 2){
+	if(inputs.hasOwnProperty('rendezvousCoordinates') && (!Array.isArray(inputs.rendezvousCoordinates) || inputs.rendezvousCoordinates.length != 2)){
 		res.data.message = 'rendezvousCoordinates must be an array of a latitude and a longitude';
 		return res;
 	}
 
 	logger.info(`${logPrefix} - check if the provided latitude and longitude are numbers`);
-	for(l of inputs.rendezvousCoordinates){
-		if(isNaN(l)){
-			res.data.message = 'latitude and longitude must be numbers';
-			return res;
+	if(inputs.hasOwnProperty('rendezvousCoordinates')){
+		for(l of inputs.rendezvousCoordinates){
+			if(isNaN(l)){
+				res.data.message = 'latitude and longitude must be numbers';
+				return res;
+			}
 		}
 	}
 
