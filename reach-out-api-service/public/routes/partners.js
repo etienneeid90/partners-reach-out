@@ -207,7 +207,6 @@ function validateInputs (logPrefix, inputs) {
 			}
 			},
 			"required": [
-			"urlName",
 			"organization",
 			"offices"
 			]
