@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 
 class InputsPreview extends Component {
-    constructor() {
-		super();
-
-		this.state = {
-            range: null,
-            latitude: null,
-            longitude: null
-		};
-	}
 
 	render() {
 		return (
@@ -17,6 +8,14 @@ class InputsPreview extends Component {
                 <h3 className='ui block header'>
                         Inputs Preview (The API params)
                     </h3>
+                    <button 
+                        className='positive ui button'
+                        onClick={ () => {
+                            this.props.onReachOut();
+                        }}
+                    >
+                        Reach Out
+                    </button>
                 <pre>
                     <code>{this.props.jsonParams}</code>
                 </pre>
