@@ -40,7 +40,7 @@ class ReachOutForm extends Component {
 						<div className='header'>
 							Latitude and Longitude
 						</div>
-						<p>they must be filled together to form an array of coordinates</p>
+						<p>Must be filled together to form an array of coordinates</p>
 					</div>
 					<div className='field'>
 						<label>Latitude In Degrees</label>
@@ -82,7 +82,7 @@ class ReachOutForm extends Component {
 								<div className='item'>organization</div>
 								<div className='item'>offices</div>
 							</div>
-							<p>offices is also an array of 1 item at least, and each item must have the following attributes</p>
+							<p>Offices is also an array of 1 item at least, and each item must have the following attributes</p>
 							<div className='ui bulleted list'>
 								<div className='item'>location</div>
 								<div className='item'>coordinates</div>
