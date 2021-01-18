@@ -8,7 +8,9 @@
 
 This microservice contains 1 api that will do the following:
 Reads the list of partners stored on the service `if no list has been provided`.
+
 Calculates the distance from their offices to Starbucks Cafe Central London (51.5144636,-0.142571) `if no other coordinates have been provided`.
+
 Returns a sorted list by company name in ascending order of the companies name and addresses of the matching partners with offices within the given range in kilometers.
 The list of partners is sotres on the microservice and it will be the used list `unless the client provided another one`.
 
