@@ -2,7 +2,7 @@
 
 ## Content of this repository:
 
-### partners-reach-out-api-service
+### 1. partners-reach-out-api-service
 - Framework: `Node - Express`
 - Language: `JavaScript`
 
@@ -25,7 +25,7 @@ To run
 ```
 
 
-### partners-reach-out-api-service
+### 2. partners-reach-out-api-service
 - library: `ReactJs`
 
 Allows the client to call the above mentioned API and displays the result.
