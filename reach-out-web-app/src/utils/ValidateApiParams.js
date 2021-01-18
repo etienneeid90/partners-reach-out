@@ -28,12 +28,12 @@ export function validate (params) {
 
     // validate that the provided latitude and longitude are numbers
     if(params.hasOwnProperty('rendezvousCoordinates')){
-        params.rendezvousCoordinates.forEach(l => {
+        for (const l of params.rendezvousCoordinates){
             if(isNaN(l)){
                 res.data.error = 'latitude and longitude must be numbers';
                 return res;
             }
-        });
+        };
     }
 
     // validate the provided partners
@@ -111,12 +111,20 @@ export function validate (params) {
 			]
 		};
         
-        params.partners.forEach(p => {
+        for (const p of params.partners){
+			// making the coordinates as an array
+			if(p.hasOwnProperty('offices') && p.offices.length){
+				for(const o of p.offices){
+					if(o.hasOwnProperty('coordinates') && typeof o.coordinates == 'string'){
+						o.coordinates = (o.coordinates.split(',')).map((c) => Number(c));
+					}
+				}
+			}
             if(!jsonValidator.validate(p, jsonSchema).valid){
 				res.data.error = 'invalid partner format';
 				return res;
 			}
-        });
+        };
 	}
 
 	// if all is valid
