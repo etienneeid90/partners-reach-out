@@ -12,14 +12,15 @@ Calculates the distance from their offices to Starbucks Cafe Central London (51.
 Returns a sorted list by company name in ascending order of the companies name and addresses of the matching partners with offices within the given range in kilometers.
 The list of partners is sotres on the microservice and it will be the used list `unless the client provided another one`.
 
+```
 How to build and run the docker image:
 
 To build:
 - sudo docker build -t reach-out-api-service .
 
 To run
-- sudo docker run -it -p `<your port number>`:1330 reach-out-api-service
-
+- sudo docker run -it -p 1330:1330 reach-out-api-service
+```
 
 
 ### partners-reach-out-api-service
@@ -27,8 +28,10 @@ To run
 
 Allows the client to call the above mentioned API and displays the result.
 
+```
 How to run:
 - npm run start
 
 The web app will launch on port `3000`
+```
 
