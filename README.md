@@ -6,7 +6,7 @@
 - Framework: `Node - Express`
 - Language: `JavaScript`
 
-This microservice contains 1 `POST /partners/in-range` api that will do the following:
+This microservice contains 1 api `POST /partners/in-range` that will do the following:
 Reads the list of partners stored on the service `if no list has been provided`.
 
 Calculates the distance from their offices to Starbucks Cafe Central London (51.5144636,-0.142571) `if no other coordinates have been provided`.
