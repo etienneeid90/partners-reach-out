@@ -38,7 +38,7 @@ class ReachOutForm extends Component {
 					</div>
 					<div className='ui message'>
 						<div className='header'>
-							Latitude and Longitude
+							Latitude and Longitude (Optional)
 						</div>
 						<p>Must be filled together to form an array of coordinates</p>
 					</div>
@@ -74,7 +74,7 @@ class ReachOutForm extends Component {
 						<label>Partners</label>
 						<div className='ui message'>
 							<div className='header'>
-								Partners Format
+								Partners (Optional) 
 							</div>
 							<p>Partners must start with '[' and end with ']' to be accepted as an array</p>
 							<p>A partner must have at least the following attributes</p>
