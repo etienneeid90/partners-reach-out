@@ -10,7 +10,7 @@ class ResponsePreview extends Component {
                 <h3 className='ui block header'>
                         API Response
                 </h3>
-                {this.props.apiResponse.status === 'success'&&
+                {this.props.apiResponse.status === 'success'&& this.props.apiResponse.data.partnersToInvite.length > 0 &&
                     <div className='ui relaxed divided list'>
                     {
                         this.props.apiResponse.data.partnersToInvite.map((partner, i) => {
@@ -21,6 +21,13 @@ class ResponsePreview extends Component {
                             />
                         })
                     }
+                    </div>
+                }
+                {this.props.apiResponse.status === 'success'&& this.props.apiResponse.data.partnersToInvite.length < 1 &&
+                    <div className='ui negative message'>
+                        <div className='header'>
+                            No partners withing this range
+                        </div>
                     </div>
                 }
                 {this.props.apiResponse.status === 'error'&&
